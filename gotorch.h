@@ -12,6 +12,7 @@ extern "C" {
 
 typedef void* TorchJitScriptModule;
 typedef void* AtTensor;
+typedef void* TorchOptimizer;
 
 typedef struct {
   TorchJitScriptModule res;
@@ -32,6 +33,11 @@ void TorchTensorBackward(AtTensor tptr);
 AtTensor TorchTensorGrad(AtTensor tptr);
 void TorchTensorSetRequiresGrad(AtTensor tptr, bool requires_grad);
 bool TorchTensorRequiresGrad(AtTensor tptr);
+
+TorchOptimizer TorchAdam(AtTensor* tptrs, int tcount, float lr);
+void TorchOptimizerDelete(TorchOptimizer optr);
+void TorchOptimizerZeroGrad(TorchOptimizer optr);
+void TorchOptimizerStep(TorchOptimizer optr);
 
 #ifdef __cplusplus
 } /* end extern "C" */

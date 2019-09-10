@@ -1,6 +1,7 @@
 #include "gotorch.h"
 
-#include <torch/csrc/api/include/torch/jit.h>
+#include <torch/jit.h>
+#include <torch/optim.h>
 #include <torch/script.h>
 
 #include <iostream>
@@ -85,4 +86,28 @@ void TorchTensorSetRequiresGrad(AtTensor tptr, bool requires_grad) {
 bool TorchTensorRequiresGrad(AtTensor tptr) {
   auto* t = static_cast<at::Tensor*>(tptr);
   return t->requires_grad();
+}
+
+TorchOptimizer TorchAdam(AtTensor* tptrs, int tcount, float lr) {
+  std::vector<Tensor> params;
+  for (size_t i = 0; i < tcount; i++) {
+    params.emplace_back(*static_cast<at::Tensor*>(tptrs[i]));
+  }
+  optim::AdamOptions opts(lr);
+  return (void*) new optim::Adam(params, opts);
+}
+
+void TorchOptimizerDelete(TorchOptimizer optr) {
+  auto* o = static_cast<optim::Optimizer*>(optr);
+  delete o;
+}
+
+void TorchOptimizerZeroGrad(TorchOptimizer optr) {
+  auto* o = static_cast<optim::Optimizer*>(optr);
+  o->zero_grad();
+}
+
+void TorchOptimizerStep(TorchOptimizer optr) {
+  auto* o = static_cast<optim::Optimizer*>(optr);
+  o->zero_grad();
 }
