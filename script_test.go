@@ -22,6 +22,7 @@ func TestScript(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	a.SetRequiresGrad(true)
 	b, err := TensorFromBlob([]float32{2, 3, -2}, []int64{3})
 	if err != nil {
 		t.Fatal(err)
@@ -29,6 +30,27 @@ func TestScript(t *testing.T) {
 	out := m.RunMethod("relu_script", []*Tensor{a, b})
 	outData := out.Blob()
 	if !reflect.DeepEqual(outData, []float32{3, 5, 0}) {
-		t.Fatal("output wrong", outData)
+		t.Error("output wrong", outData)
+	}
+	out.Backward()
+
+	grad := a.Grad()
+	gradData := grad.Blob()
+	if !reflect.DeepEqual(gradData, []float32{1, 1, 0}) {
+		t.Error("output wrong", gradData)
+	}
+}
+
+func TestScriptRequiresGrad(t *testing.T) {
+	a, err := TensorFromBlob([]float32{1, 2, -1}, []int64{3})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if a.RequiresGrad() != false {
+		t.Errorf("should have not required grad")
+	}
+	a.SetRequiresGrad(true)
+	if a.RequiresGrad() != true {
+		t.Errorf("should have required grad")
 	}
 }

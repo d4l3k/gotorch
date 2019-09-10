@@ -68,3 +68,19 @@ func (t *Tensor) Blob() []float32 {
 	}
 	return out
 }
+
+func (t *Tensor) Backward() {
+	C.TorchTensorBackward(t.ptr)
+}
+
+func (t *Tensor) Grad() *Tensor {
+	return tensorFromPtr(C.TorchTensorGrad(t.ptr))
+}
+
+func (t *Tensor) RequiresGrad() bool {
+	return bool(C.TorchTensorRequiresGrad(t.ptr))
+}
+
+func (t *Tensor) SetRequiresGrad(requiresGrad bool) {
+	C.TorchTensorSetRequiresGrad(t.ptr, C.bool(requiresGrad))
+}

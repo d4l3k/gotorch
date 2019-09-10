@@ -28,6 +28,10 @@ int TorchTensorDim(AtTensor);
 void TorchTensorDelete(AtTensor);
 void TorchTensorSizes(AtTensor tptr, int64_t* data);
 void* TorchTensorData(AtTensor tptr);
+void TorchTensorBackward(AtTensor tptr);
+AtTensor TorchTensorGrad(AtTensor tptr);
+void TorchTensorSetRequiresGrad(AtTensor tptr, bool requires_grad);
+bool TorchTensorRequiresGrad(AtTensor tptr);
 
 #ifdef __cplusplus
 } /* end extern "C" */

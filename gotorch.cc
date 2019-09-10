@@ -27,7 +27,7 @@ void TorchJitScriptModuleDelete(TorchJitScriptModule mptr) {
 }
 
 AtTensor TorchJitScriptModuleRunMethod(TorchJitScriptModule mptr, char* cmethod,
-				       AtTensor* valsptr, int num_vals) {
+                                       AtTensor* valsptr, int num_vals) {
   auto* m = static_cast<jit::script::CompilationUnit*>(mptr);
   std::vector<IValue> vals;
   vals.reserve(num_vals);
@@ -40,14 +40,11 @@ AtTensor TorchJitScriptModuleRunMethod(TorchJitScriptModule mptr, char* cmethod,
   return (void*)new at::Tensor(res.toTensor());
 }
 
-void tensorDeleter(void* ptr) { free(ptr); }
-
 AtTensor TorchTensorFromBlob(void* data_ptr, int64_t* sizes_ptr,
-			     int sizes_len) {
+                             int sizes_len) {
   std::vector<int64_t> sizes(sizes_ptr, sizes_ptr + sizes_len);
   at::TensorOptions opts(torch::kFloat32);
-  return (void*)new torch::Tensor(
-      torch::from_blob(data_ptr, sizes, tensorDeleter, opts));
+  return (void*)new torch::Tensor(torch::from_blob(data_ptr, sizes, opts));
 }
 
 void TorchTensorDelete(AtTensor tptr) { delete static_cast<at::Tensor*>(tptr); }
@@ -68,4 +65,24 @@ void TorchTensorSizes(AtTensor tptr, int64_t* data) {
 void* TorchTensorData(AtTensor tptr) {
   auto* t = static_cast<at::Tensor*>(tptr);
   return (void*)t->data<float>();
+}
+
+void TorchTensorBackward(AtTensor tptr) {
+  auto* t = static_cast<at::Tensor*>(tptr);
+  t->backward();
+}
+
+AtTensor TorchTensorGrad(AtTensor tptr) {
+  auto* t = static_cast<at::Tensor*>(tptr);
+  return (void*)new torch::Tensor(t->grad());
+}
+
+void TorchTensorSetRequiresGrad(AtTensor tptr, bool requires_grad) {
+  auto* t = static_cast<at::Tensor*>(tptr);
+  t->set_requires_grad(requires_grad);
+}
+
+bool TorchTensorRequiresGrad(AtTensor tptr) {
+  auto* t = static_cast<at::Tensor*>(tptr);
+  return t->requires_grad();
 }
