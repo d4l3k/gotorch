@@ -35,6 +35,7 @@ void TorchTensorSetRequiresGrad(AtTensor tptr, bool requires_grad);
 bool TorchTensorRequiresGrad(AtTensor tptr);
 
 TorchOptimizer TorchAdam(AtTensor* tptrs, int tcount, float lr);
+TorchOptimizer TorchSGD(AtTensor* tptrs, int tcount, float lr);
 void TorchOptimizerDelete(TorchOptimizer optr);
 void TorchOptimizerZeroGrad(TorchOptimizer optr);
 void TorchOptimizerStep(TorchOptimizer optr);

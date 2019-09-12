@@ -11,12 +11,26 @@ type Optimizer struct {
 	ptr C.TorchOptimizer
 }
 
-func Adam(params []*Tensor, lr float32) *Optimizer {
+func tensorToTensorPtrs(tensors []*Tensor) []C.AtTensor {
 	var tptrs []C.AtTensor
-	for _, t := range params {
+	for _, t := range tensors {
 		tptrs = append(tptrs, t.ptr)
 	}
+	return tptrs
+}
+
+func Adam(params []*Tensor, lr float32) *Optimizer {
+	tptrs := tensorToTensorPtrs(params)
 	return optimizerFromPtr(C.TorchAdam(
+		(*C.AtTensor)(unsafe.Pointer(&tptrs[0])),
+		C.int(len(params)),
+		C.float(lr),
+	))
+}
+
+func SGD(params []*Tensor, lr float32) *Optimizer {
+	tptrs := tensorToTensorPtrs(params)
+	return optimizerFromPtr(C.TorchSGD(
 		(*C.AtTensor)(unsafe.Pointer(&tptrs[0])),
 		C.int(len(params)),
 		C.float(lr),

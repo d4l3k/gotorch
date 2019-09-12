@@ -88,13 +88,26 @@ bool TorchTensorRequiresGrad(AtTensor tptr) {
   return t->requires_grad();
 }
 
-TorchOptimizer TorchAdam(AtTensor* tptrs, int tcount, float lr) {
+namespace {
+std::vector<Tensor> tensorsFromTensorPtrs(AtTensor* tptrs, int tcount) {
   std::vector<Tensor> params;
   for (size_t i = 0; i < tcount; i++) {
     params.emplace_back(*static_cast<at::Tensor*>(tptrs[i]));
   }
+  return params;
+}
+}
+
+TorchOptimizer TorchAdam(AtTensor* tptrs, int tcount, float lr) {
+  auto params = tensorsFromTensorPtrs(tptrs, tcount);
   optim::AdamOptions opts(lr);
   return (void*) new optim::Adam(params, opts);
+}
+
+TorchOptimizer TorchSGD(AtTensor* tptrs, int tcount, float lr) {
+  auto params = tensorsFromTensorPtrs(tptrs, tcount);
+  optim::SGDOptions opts(lr);
+  return (void*) new optim::SGD(params, opts);
 }
 
 void TorchOptimizerDelete(TorchOptimizer optr) {
@@ -109,5 +122,5 @@ void TorchOptimizerZeroGrad(TorchOptimizer optr) {
 
 void TorchOptimizerStep(TorchOptimizer optr) {
   auto* o = static_cast<optim::Optimizer*>(optr);
-  o->zero_grad();
+  o->step();
 }

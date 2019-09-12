@@ -23,7 +23,7 @@ func TestScript(t *testing.T) {
 		t.Fatal(err)
 	}
 	a.SetRequiresGrad(true)
-	optim := Adam([]*Tensor{a}, 0.1)
+	optim := SGD([]*Tensor{a}, 0.1)
 	optim.ZeroGrad()
 	b, err := TensorFromBlob([]float32{2, 3, -2}, []int64{3})
 	if err != nil {
@@ -45,7 +45,7 @@ func TestScript(t *testing.T) {
 	optim.Step()
 
 	aData := a.Blob()
-	if !reflect.DeepEqual(aData, []float32{1, 2, -1}) {
+	if !reflect.DeepEqual(aData, []float32{0.9, 1.9, -1}) {
 		t.Error("output wrong", aData)
 	}
 }
