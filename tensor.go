@@ -120,6 +120,10 @@ func L1Loss(a, b *Tensor) *Tensor {
 	return tensorFromPtr(C.TorchL1Loss(a.ptr, b.ptr))
 }
 
+func MSELoss(a, b *Tensor) *Tensor {
+	return tensorFromPtr(C.TorchMSELoss(a.ptr, b.ptr))
+}
+
 func Stack(dim int64, tensors ...*Tensor) *Tensor {
 	tptrs := tensorToTensorPtrs(tensors)
 	return tensorFromPtr(C.TorchStack(

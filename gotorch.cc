@@ -155,3 +155,4 @@ TENSOR_BI_IMPL(Div, div);
 TENSOR_BI_IMPL(Eq, eq);
 TENSOR_BI_IMPL(L1Loss, l1_loss);
 TENSOR_BI_IMPL(NLLLoss, nll_loss);
+TENSOR_BI_IMPL(MSELoss, mse_loss);

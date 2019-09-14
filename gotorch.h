@@ -53,6 +53,7 @@ TENSOR_BI(Div);
 TENSOR_BI(Eq);
 TENSOR_BI(L1Loss);
 TENSOR_BI(NLLLoss);
+TENSOR_BI(MSELoss);
 
 #ifdef __cplusplus
 } /* end extern "C" */
