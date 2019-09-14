@@ -14,13 +14,25 @@ type Tensor struct {
 	data []float32
 }
 
+func TensorFromScalar(f float32) *Tensor {
+	t, err := TensorFromBlob([]float32{f}, nil)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
 func TensorFromBlob(data []float32, sizes []int64) (*Tensor, error) {
 	if totalSize(sizes) != len(data) {
 		return nil, errors.Errorf("input data doesn't match size")
 	}
+	var startPtr *C.int64_t
+	if len(sizes) > 0 {
+		startPtr = (*C.int64_t)(&sizes[0])
+	}
 	t := tensorFromPtr(C.TorchTensorFromBlob(
 		unsafe.Pointer(&data[0]),
-		(*C.int64_t)(&sizes[0]),
+		startPtr,
 		C.int(len(sizes)),
 	))
 	// we still own the data so we have to hold on to it
@@ -45,6 +57,9 @@ func (t *Tensor) Dim() int {
 }
 
 func (t *Tensor) Sizes() []int64 {
+	if t.Dim() == 0 {
+		return nil
+	}
 	sizes := make([]int64, t.Dim())
 	C.TorchTensorSizes(t.ptr, (*C.int64_t)(&sizes[0]))
 	return sizes

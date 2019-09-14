@@ -97,3 +97,15 @@ func TestReshape(t *testing.T) {
 		t.Error("output wrong", dims)
 	}
 }
+
+func TestScalar(t *testing.T) {
+	a := TensorFromScalar(1)
+	if a.Dim() != 0 {
+		t.Error("expected 0 dim")
+	}
+
+	out := a.Blob()
+	if !reflect.DeepEqual(out, []float32{1}) {
+		t.Error("output wrong", out)
+	}
+}
