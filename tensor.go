@@ -119,3 +119,12 @@ func NLLLoss(a, b *Tensor) *Tensor {
 func L1Loss(a, b *Tensor) *Tensor {
 	return tensorFromPtr(C.TorchL1Loss(a.ptr, b.ptr))
 }
+
+func Stack(dim int64, tensors ...*Tensor) *Tensor {
+	tptrs := tensorToTensorPtrs(tensors)
+	return tensorFromPtr(C.TorchStack(
+		(*C.AtTensor)(unsafe.Pointer(&tptrs[0])),
+		C.int(len(tptrs)),
+		C.int64_t(dim),
+	))
+}

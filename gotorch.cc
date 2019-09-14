@@ -106,11 +106,11 @@ std::vector<Tensor> tensorsFromTensorPtrs(AtTensor* tptrs, int tcount) {
 TorchOptimizer TorchAdam(AtTensor* tptrs, int tcount, float lr) {
   auto params = tensorsFromTensorPtrs(tptrs, tcount);
   optim::AdamOptions opts(lr);
-  return (void*)new optim::Adam(params, opts);
+  return (void*)new optim::Adam(std::move(params), opts);
 }
 
 TorchOptimizer TorchSGD(AtTensor* tptrs, int tcount, float lr) {
-  auto params = tensorsFromTensorPtrs(tptrs, tcount);
+  auto params = tensorsFromTensorPtrs(std::move(tptrs), tcount);
   optim::SGDOptions opts(lr);
   return (void*)new optim::SGD(params, opts);
 }
@@ -128,6 +128,11 @@ void TorchOptimizerZeroGrad(TorchOptimizer optr) {
 void TorchOptimizerStep(TorchOptimizer optr) {
   auto* o = static_cast<optim::Optimizer*>(optr);
   o->step();
+}
+
+AtTensor TorchStack(AtTensor* tptrs, int tcount, int64_t dim) {
+  auto tensors = tensorsFromTensorPtrs(tptrs, tcount);
+    return (void*)new Tensor(stack(std::move(tensors), dim));
 }
 
 #define TENSOR_BI_IMPL(name, method)          \

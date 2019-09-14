@@ -63,3 +63,24 @@ func TestScriptRequiresGrad(t *testing.T) {
 		t.Errorf("should have required grad")
 	}
 }
+
+func TestStack(t *testing.T) {
+	a, err := TensorFromBlob([]float32{1}, []int64{1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := TensorFromBlob([]float32{1}, []int64{1})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	out := Stack(0, a, b)
+	data := out.Blob()
+	if !reflect.DeepEqual(data, []float32{1, 1}) {
+		t.Error("output wrong", data)
+	}
+	dims := out.Sizes()
+	if !reflect.DeepEqual(dims, []int64{2, 1}) {
+		t.Error("output wrong", dims)
+	}
+}

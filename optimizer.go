@@ -12,9 +12,9 @@ type Optimizer struct {
 }
 
 func tensorToTensorPtrs(tensors []*Tensor) []C.AtTensor {
-	var tptrs []C.AtTensor
-	for _, t := range tensors {
-		tptrs = append(tptrs, t.ptr)
+	tptrs := make([]C.AtTensor, len(tensors))
+	for i, t := range tensors {
+		tptrs[i] = t.ptr
 	}
 	return tptrs
 }
