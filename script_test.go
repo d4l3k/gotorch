@@ -1,4 +1,4 @@
-package gotorch
+package torch
 
 import (
 	"reflect"

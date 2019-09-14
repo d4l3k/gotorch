@@ -1,4 +1,4 @@
-package gotorch
+package torch
 
 // #include "gotorch.h"
 import "C"
