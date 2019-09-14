@@ -142,3 +142,5 @@ TENSOR_BI_IMPL(Add, add);
 TENSOR_BI_IMPL(Sub, sub);
 TENSOR_BI_IMPL(Div, div);
 TENSOR_BI_IMPL(Eq, eq);
+TENSOR_BI_IMPL(L1Loss, l1_loss);
+TENSOR_BI_IMPL(NLLLoss, nll_loss);

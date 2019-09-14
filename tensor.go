@@ -111,3 +111,11 @@ func (t *Tensor) Div(b *Tensor) *Tensor {
 func (t *Tensor) Eq(b *Tensor) *Tensor {
 	return tensorFromPtr(C.TorchEq(t.ptr, b.ptr))
 }
+
+func NLLLoss(a, b *Tensor) *Tensor {
+	return tensorFromPtr(C.TorchNLLLoss(a.ptr, b.ptr))
+}
+
+func L1Loss(a, b *Tensor) *Tensor {
+	return tensorFromPtr(C.TorchL1Loss(a.ptr, b.ptr))
+}
