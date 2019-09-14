@@ -84,3 +84,30 @@ func (t *Tensor) RequiresGrad() bool {
 func (t *Tensor) SetRequiresGrad(requiresGrad bool) {
 	C.TorchTensorSetRequiresGrad(t.ptr, C.bool(requiresGrad))
 }
+
+func RandN(sizes ...int64) *Tensor {
+	return tensorFromPtr(C.TorchRandN(
+		(*C.int64_t)(&sizes[0]),
+		C.int(len(sizes)),
+	))
+}
+
+func (t *Tensor) Dot(b *Tensor) *Tensor {
+	return tensorFromPtr(C.TorchDot(t.ptr, b.ptr))
+}
+
+func (t *Tensor) Add(b *Tensor) *Tensor {
+	return tensorFromPtr(C.TorchAdd(t.ptr, b.ptr))
+}
+
+func (t *Tensor) Sub(b *Tensor) *Tensor {
+	return tensorFromPtr(C.TorchSub(t.ptr, b.ptr))
+}
+
+func (t *Tensor) Div(b *Tensor) *Tensor {
+	return tensorFromPtr(C.TorchDiv(t.ptr, b.ptr))
+}
+
+func (t *Tensor) Eq(b *Tensor) *Tensor {
+	return tensorFromPtr(C.TorchEq(t.ptr, b.ptr))
+}

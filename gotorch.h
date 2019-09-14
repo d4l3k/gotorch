@@ -25,6 +25,8 @@ AtTensor TorchJitScriptModuleRunMethod(TorchJitScriptModule, char*, AtTensor*,
                                        int);
 
 AtTensor TorchTensorFromBlob(void*, int64_t*, int);
+AtTensor TorchRandN(int64_t* sizes, int count);
+
 int TorchTensorDim(AtTensor);
 void TorchTensorDelete(AtTensor);
 void TorchTensorSizes(AtTensor tptr, int64_t* data);
@@ -39,6 +41,14 @@ TorchOptimizer TorchSGD(AtTensor* tptrs, int tcount, float lr);
 void TorchOptimizerDelete(TorchOptimizer optr);
 void TorchOptimizerZeroGrad(TorchOptimizer optr);
 void TorchOptimizerStep(TorchOptimizer optr);
+
+#define TENSOR_BI(name) AtTensor Torch##name(AtTensor aptr, AtTensor bptr)
+
+TENSOR_BI(Dot);
+TENSOR_BI(Add);
+TENSOR_BI(Sub);
+TENSOR_BI(Div);
+TENSOR_BI(Eq);
 
 #ifdef __cplusplus
 } /* end extern "C" */

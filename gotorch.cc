@@ -48,6 +48,11 @@ AtTensor TorchTensorFromBlob(void* data_ptr, int64_t* sizes_ptr,
   return (void*)new torch::Tensor(torch::from_blob(data_ptr, sizes, opts));
 }
 
+AtTensor TorchRandN(int64_t* sizes_ptr, int sizes_len) {
+  std::vector<int64_t> sizes(sizes_ptr, sizes_ptr + sizes_len);
+  return (void*)new torch::Tensor(torch::randn(sizes));
+}
+
 void TorchTensorDelete(AtTensor tptr) { delete static_cast<at::Tensor*>(tptr); }
 
 int TorchTensorDim(AtTensor tptr) {
@@ -96,18 +101,18 @@ std::vector<Tensor> tensorsFromTensorPtrs(AtTensor* tptrs, int tcount) {
   }
   return params;
 }
-}
+}  // namespace
 
 TorchOptimizer TorchAdam(AtTensor* tptrs, int tcount, float lr) {
   auto params = tensorsFromTensorPtrs(tptrs, tcount);
   optim::AdamOptions opts(lr);
-  return (void*) new optim::Adam(params, opts);
+  return (void*)new optim::Adam(params, opts);
 }
 
 TorchOptimizer TorchSGD(AtTensor* tptrs, int tcount, float lr) {
   auto params = tensorsFromTensorPtrs(tptrs, tcount);
   optim::SGDOptions opts(lr);
-  return (void*) new optim::SGD(params, opts);
+  return (void*)new optim::SGD(params, opts);
 }
 
 void TorchOptimizerDelete(TorchOptimizer optr) {
@@ -124,3 +129,16 @@ void TorchOptimizerStep(TorchOptimizer optr) {
   auto* o = static_cast<optim::Optimizer*>(optr);
   o->step();
 }
+
+#define TENSOR_BI_IMPL(name, method)          \
+  TENSOR_BI(name) {                           \
+    auto* a = static_cast<Tensor*>(aptr);     \
+    auto* b = static_cast<Tensor*>(bptr);     \
+    return (void*)new Tensor(method(*a, *b)); \
+  }
+
+TENSOR_BI_IMPL(Dot, dot);
+TENSOR_BI_IMPL(Add, add);
+TENSOR_BI_IMPL(Sub, sub);
+TENSOR_BI_IMPL(Div, div);
+TENSOR_BI_IMPL(Eq, eq);
