@@ -128,3 +128,11 @@ func Stack(dim int64, tensors ...*Tensor) *Tensor {
 		C.int64_t(dim),
 	))
 }
+
+func (t *Tensor) Reshape(sizes ...int64) *Tensor {
+	return tensorFromPtr(C.TorchReshape(
+		t.ptr,
+		(*C.int64_t)(&sizes[0]),
+		C.int(len(sizes)),
+	))
+}

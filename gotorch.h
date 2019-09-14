@@ -36,6 +36,7 @@ AtTensor TorchTensorGrad(AtTensor tptr);
 void TorchTensorSetRequiresGrad(AtTensor tptr, bool requires_grad);
 bool TorchTensorRequiresGrad(AtTensor tptr);
 AtTensor TorchStack(AtTensor* tptrs, int tcount, int64_t dim);
+AtTensor TorchReshape(AtTensor aptr, int64_t* sizes_ptr, int sizes_len);
 
 TorchOptimizer TorchAdam(AtTensor* tptrs, int tcount, float lr);
 TorchOptimizer TorchSGD(AtTensor* tptrs, int tcount, float lr);

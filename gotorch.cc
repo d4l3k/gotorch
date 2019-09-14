@@ -132,7 +132,13 @@ void TorchOptimizerStep(TorchOptimizer optr) {
 
 AtTensor TorchStack(AtTensor* tptrs, int tcount, int64_t dim) {
   auto tensors = tensorsFromTensorPtrs(tptrs, tcount);
-    return (void*)new Tensor(stack(std::move(tensors), dim));
+  return (void*)new Tensor(stack(std::move(tensors), dim));
+}
+
+AtTensor TorchReshape(AtTensor aptr, int64_t* sizes_ptr, int sizes_len) {
+  auto* a = static_cast<Tensor*>(aptr);
+  std::vector<int64_t> sizes(sizes_ptr, sizes_ptr + sizes_len);
+  return (void*)new Tensor(reshape(*a, sizes));
 }
 
 #define TENSOR_BI_IMPL(name, method)          \

@@ -84,3 +84,16 @@ func TestStack(t *testing.T) {
 		t.Error("output wrong", dims)
 	}
 }
+
+func TestReshape(t *testing.T) {
+	a, err := TensorFromBlob([]float32{1, 2, 3, 4, 5, 6}, []int64{6})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	out := a.Reshape(2, 3)
+	dims := out.Sizes()
+	if !reflect.DeepEqual(dims, []int64{2, 3}) {
+		t.Error("output wrong", dims)
+	}
+}
